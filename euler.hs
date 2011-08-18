@@ -7,7 +7,7 @@ import Char
 
 fibonacci a b = let c = a + b in (c : fibonacci b c)
 
-factorial n = foldr (*) 1 [2..n]
+factorial n = product [2..n]
 
 
 -- A primes sieve from haskell.org:
@@ -22,11 +22,20 @@ minus (x:xs) (y:ys) = case (compare x y) of
     GT -> minus (x:xs) ys
 minus xs _ = xs
 
-factorize num = factorize' num (primesTo num) [] where
+primeFactors :: Int -> [Int]
+primeFactors n = factor n $ primesTo n
+  where
+    factor n (p:ps) 
+        | p*p > n        = [n]
+        | n `mod` p == 0 = p : factor (n `div` p) (p:ps)
+        | otherwise      = factor n ps
+
+{-factorize num = factorize' num (primesTo num) where
     factorize' 1 _ result = result
     factorize' n (p:ps) buf = case n `divMod` p of
         (q, 0) -> factorize' q (p:ps) (p:buf)
         _ -> factorize' n ps buf
+-}
 
 countDivisors num = 
     let cd' 1 _ result buf = result * buf
@@ -50,14 +59,7 @@ euler 2 =
         nums = takeWhile (<=limit) (fibonacci 0 1) 
     in sum $ filter even nums
 
-euler 3 =
-    let param = 600851475143
-        maxDiv :: Int -> [Int] -> Int
-        maxDiv n (p:ps) = case (n `divMod` p) of
-            (1, 0) -> p
-            (q, 0) -> maxDiv q (p:ps)
-            _ -> maxDiv n ps
-    in maxDiv param $ primesTo param
+euler 3 = foldr1 max $ primeFactors 600851475143
 
 euler 4 =
     let palindromes = map mkPalind [999,998..100]
@@ -109,23 +111,22 @@ euler 8 =
             "71636269561882670428252483600823257530420752963450"]
         digits = map digitToInt bignum
     in
-        foldr1 max [foldr1 (*) arr | arr <- sublists 5 digits]
+        foldr1 max [product arr | arr <- sublists 5 digits]
 
 
 euler 9 = 
     let param = 1000
         isSolution (x, y) = x^2 + y^2 == (param - x - y)^2
-        Just (a, b) = find isSolution [(x, y) | x <- [1..1000], y <- [1..1000-x]]
+        (a, b) = head $ filter isSolution [(x, y) | x <- [1..1000], y <- [1..1000-x]]
     in a * b * (param - a - b)
 
 euler 10 = sum $ primesTo 2000000
 
 euler 12 =
-    let triangles = tr 1 0 where tr n prev = (n + prev) : (tr (n+1) (n + prev))
-
+    let triangles = scanl1 (+) [1..]
+        countDivisors n = product $ map ((+1).length) $ group $ primeFactors n
         isSolution n = countDivisors n > 500
-        Just solution = find isSolution triangles
-    in solution
+    in head $ filter isSolution triangles
 
 euler 13 
     = let nums = [37107287533902102798797998220837590246510135740250,
