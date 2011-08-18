@@ -1,12 +1,11 @@
 import System.Environment
 import Data.List
 import Data.Maybe
+import Char
 
 -- Utils
 
 fibonacci a b = let c = a + b in (c : fibonacci b c)
-
-strToDigits s = [read [d] | d <- s] -- used in 8 and 16
 
 factorial n = foldr (*) 1 [2..n]
 
@@ -94,7 +93,7 @@ euler 8 =
             "84580156166097919133875499200524063689912560717606",
             "05886116467109405077541002256983155200055935729725",
             "71636269561882670428252483600823257530420752963450"]
-        digits = strToDigits bignum
+        digits = map digitToInt bignum
     in
         foldr1 max [foldr1 (*) arr | arr <- sublists 5 digits]
 
@@ -107,9 +106,9 @@ euler 9 =
 
 euler 10 = sum $ primesTo 2000000
 
-euler 16 = sum $ strToDigits $ show $ 2^1000
+euler 16 = sum $ map digitToInt $ show $ 2^1000
 
-euler 20 = sum $ strToDigits $ show $ factorial 100
+euler 20 = sum $ map digitToInt $ show $ factorial 100
 
 
 -- main
