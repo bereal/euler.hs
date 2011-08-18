@@ -6,11 +6,15 @@ import Data.Maybe
 
 fibonacci a b = let c = a + b in (c : fibonacci b c)
 
+strToDigits s = [read [d] | d <- s] -- used in 8 and 16
+
+factorial n = foldr (*) 1 [2..n]
+
 -- A primes sieve from haskell.org:
 
 primesTo m = 2 : eratos [3,5..m]  where
     eratos []     = []
-    eratos (p:xs) = p : eratos (xs `minus` [p,p+2*p..m])
+    eratos (p:xs) = p : eratos (xs `minus` [p*p,p*p+2*p..m])
 
 minus (x:xs) (y:ys) = case (compare x y) of
     LT -> x : minus xs (y:ys)
@@ -90,7 +94,7 @@ euler 8 =
             "84580156166097919133875499200524063689912560717606",
             "05886116467109405077541002256983155200055935729725",
             "71636269561882670428252483600823257530420752963450"]
-        digits = [read [d] | d <- bignum]
+        digits = strToDigits bignum
     in
         foldr1 max [foldr1 (*) arr | arr <- sublists 5 digits]
 
@@ -100,6 +104,13 @@ euler 9 =
         isSolution (x, y) = x^2 + y^2 == (param - x - y)^2
         Just (a, b) = find isSolution [(x, y) | x <- [1..1000], y <- [1..1000-x]]
     in a * b * (param - a - b)
+
+euler 10 = sum $ primesTo 2000000
+
+euler 16 = sum $ strToDigits $ show $ 2^1000
+
+euler 20 = sum $ strToDigits $ show $ factorial 100
+
 
 -- main
 
