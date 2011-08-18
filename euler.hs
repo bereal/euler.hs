@@ -6,6 +6,7 @@ import Data.Maybe
 
 fibonacci a b = let c = a + b in (c : fibonacci b c)
 
+-- A primes sieve from haskell.org:
 
 primesTo m = 2 : eratos [3,5..m]  where
     eratos []     = []
@@ -50,7 +51,8 @@ euler 4 =
         isGoodDiv n d = let (q, r) = (n `divMod` d) 
                         in (r==0 && q < 1000 && q > 100)
         isSolution n = isJust $ find (isGoodDiv n) divisors
-    in fromJust $ find isSolution palindromes
+        Just solution = find isSolution palindromes
+    in solution
 
 euler 5 = foldr1 lcm [1..20]
 
@@ -88,10 +90,16 @@ euler 8 =
             "84580156166097919133875499200524063689912560717606",
             "05886116467109405077541002256983155200055935729725",
             "71636269561882670428252483600823257530420752963450"]
-        digits :: [Int]
         digits = [read [d] | d <- bignum]
     in
         foldr1 max [foldr1 (*) arr | arr <- sublists 5 digits]
+
+
+euler 9 = 
+    let param = 1000
+        isSolution (x, y) = x^2 + y^2 == (param - x - y)^2
+        Just (a, b) = find isSolution [(x, y) | x <- [1..1000], y <- [1..1000-x]]
+    in a * b * (param - a - b)
 
 -- main
 
