@@ -12,9 +12,11 @@ factorial n = product [2..n]
 
 -- A primes sieve from haskell.org:
 
-primesTo m = 2 : eratos [3,5..m]  where
+primes = 2 : eratos [3,5..]  where
     eratos []     = []
-    eratos (p:xs) = p : eratos (xs `minus` [p*p,p*p+2*p..m])
+    eratos (p:xs) = p : eratos (xs `minus` [p*p,p*p+2*p..])
+
+primesTo n = takeWhile (<=n) primes
 
 minus (x:xs) (y:ys) = case (compare x y) of
     LT -> x : minus xs (y:ys)
@@ -30,20 +32,7 @@ primeFactors n = factor n $ primesTo n
         | n `mod` p == 0 = p : factor (n `div` p) (p:ps)
         | otherwise      = factor n ps
 
-{-factorize num = factorize' num (primesTo num) where
-    factorize' 1 _ result = result
-    factorize' n (p:ps) buf = case n `divMod` p of
-        (q, 0) -> factorize' q (p:ps) (p:buf)
-        _ -> factorize' n ps buf
--}
-
-countDivisors num = 
-    let cd' 1 _ result buf = result * buf
-        cd' n (p:ps) result coeff = case n `divMod` p of
-            (q, 0) -> cd' q (p:ps) result (coeff+1)
-            _ -> cd' n ps (result * coeff) 1
-    in cd' num (primesTo num) 1 1
-
+--
 -- Problems
 
 euler :: Int -> Int
@@ -59,7 +48,7 @@ euler 2 =
         nums = takeWhile (<=limit) (fibonacci 0 1) 
     in sum $ filter even nums
 
-euler 3 = foldr1 max $ primeFactors 600851475143
+euler 3 = maximum $ primeFactors 600851475143
 
 euler 4 =
     let palindromes = map mkPalind [999,998..100]
@@ -70,8 +59,7 @@ euler 4 =
         isGoodDiv n d = let (q, r) = (n `divMod` d) 
                         in (r==0 && q < 1000 && q > 100)
         isSolution n = isJust $ find (isGoodDiv n) divisors
-        Just solution = find isSolution palindromes
-    in solution
+    in head $ filter isSolution palindromes 
 
 euler 5 = foldr1 lcm [1..20]
 
@@ -81,7 +69,7 @@ euler 6 =
         sqSum = (^2) . sum
     in (sqSum nums) - (sumSq nums)
 
-euler 7 = head $ drop 10000 $ primesTo 100000000000
+euler 7 = head $ drop 10000 $ primes
     
 euler 8 = 
     let sublists len arr =
@@ -111,7 +99,7 @@ euler 8 =
             "71636269561882670428252483600823257530420752963450"]
         digits = map digitToInt bignum
     in
-        foldr1 max [product arr | arr <- sublists 5 digits]
+        maximum [product arr | arr <- sublists 5 digits]
 
 
 euler 9 = 
@@ -232,7 +220,6 @@ euler 13
           s = sum nums
           digitsStr = take 10 $ show s
     in read digitsStr          
-
 
 euler 16 = sum $ map digitToInt $ show $ 2^1000
 
