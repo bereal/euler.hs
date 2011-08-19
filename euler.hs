@@ -2,13 +2,23 @@ import System.Environment
 import Data.List
 import Data.Maybe
 import Char
+import Debug.Trace
 
 -- Utils
+
+infixl 6 ?
+True ? x = const x
+False ? _ = id
+
+maximumWith :: (Ord  b) => (a->b) -> [a] -> a
+maximumWith f l = 
+    let pairs = [(f a, a) | a <- l]
+        cmp t1 t2 = compare (fst t1) (fst t2)
+    in snd $ maximumBy cmp pairs
 
 fibonacci a b = let c = a + b in (c : fibonacci b c)
 
 factorial n = product [2..n]
-
 
 -- A primes sieve from haskell.org:
 
@@ -220,6 +230,15 @@ euler 13
           s = sum nums
           digitsStr = take 10 $ show s
     in read digitsStr          
+
+euler 14 = 
+    let num = 1000000
+        next n 
+            | even n = n `div` 2
+            | otherwise = 3 * n + 1
+        seqLen buf 1 = buf
+        seqLen buf n = seqLen (buf+1) (next n)
+    in maximumWith (seqLen 0) [(num `div` 2)..num]
 
 euler 16 = sum $ map digitToInt $ show $ 2^1000
 
