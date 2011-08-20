@@ -214,10 +214,12 @@ euler Problem {pId = 17} =
             | n < 100 = 
                 let (d, r) = n `divMod` 10 
                     sayDecs = decs !! d
-                in sayDecs ++ (if r==0 then "" else "-" ++(say r))
+                    sayRest = "-" ++ (say r)
+                in sayDecs ++ (if r==0 then "" else sayRest)
             | n < 1000 = let (d, r) = n `divMod` 100 
                              sayHund = (say d) ++ " hundred"
-                in sayHund ++ (if r==0 then "" else " and " ++ (say r))
+                             sayRest = " and " ++ (say r)
+                in sayHund ++ (if r==0 then "" else sayRest)
             | n == 1000 = "one thousand"
             | otherwise = undefined
 
@@ -245,10 +247,10 @@ euler Problem {pId = 19} =
         months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         addWeek (y, m, d) =
             let
-                monLen = months !! (m-1) + (if m==2 && (isLeap y) then 1 else 0)
+                monLen = months !! (m-1) + fromEnum (m==2 && (isLeap y))
                 newD = d+7 
-                newM = if newD > monLen then (m + 1) else m
-                newY = if newM > 12 then (y+1) else y
+                newM = m + fromEnum (newD > monLen)
+                newY = y + fromEnum (newM > 12)
             in (newY, newM `smod` 12, newD `smod` monLen)
 
         sundays = iterate addWeek (1900, 1, 7)
