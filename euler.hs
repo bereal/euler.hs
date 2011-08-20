@@ -11,6 +11,13 @@ infixl 6 ?
 True ? x = const x
 False ? _ = id
 
+enum = zip [0..]
+
+sublists len arr =
+    if length arr < len
+        then []
+        else (take len arr : (sublists len $ tail arr))
+
 maximumWith :: (Ord  b) => (a->b) -> [a] -> a
 maximumWith f l = 
     let pairs = [(f a, a) | a <- l]
@@ -85,11 +92,9 @@ euler Problem {pId = 6} =
 
 euler Problem {pId = 7}  = head $ drop 10000 $ primes
     
+euler Problem {pId = 8, dataString=Nothing} = error "Data file is missing"
 euler Problem {pId = 8, dataString=Just sData} = 
-    let sublists len arr =
-            if length arr < len
-                then []
-                else (take len arr : (sublists len $ tail arr))
+    let 
         digits = [digitToInt d | d <- sData, isDigit d]
     in
         maximum [product arr | arr <- sublists 5 digits]
@@ -109,6 +114,7 @@ euler Problem {pId = 12} =
         isSolution n = countDivisors n > 500
     in head $ filter isSolution triangles
 
+euler Problem {pId = 13, dataString=Nothing} = error "Data file is missing"
 euler Problem {pId = 13, dataString = Just sData}  
     = let nums = map read $ lines sData
           s = sum nums
@@ -126,9 +132,16 @@ euler Problem {pId = 14}  =
 
 euler Problem {pId = 16} = sum $ map digitToInt $ show $ 2^1000
 
-
+euler Problem {pId = 18, dataString = Nothing} = error "Tree data file is missing"
+euler Problem {pId = 18, dataString = Just sData} =
+    let tree = [map read $ words l | l <- lines sData]
+        maxFromPairs (v1: v2: vs) = (max v1 v2) : maxFromPairs (v2:vs)
+        calcPaths [] level = level
+        calcPaths kidPaths level = zipWith (+) level (maxFromPairs kidPaths)
+    in
+        head $ foldl calcPaths [] $ reverse tree
+        
 euler Problem {pId = 20} = sum $ map digitToInt $ show $ factorial 100
-
 
 -- main
 
