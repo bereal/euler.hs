@@ -42,7 +42,6 @@ minus (x:xs) (y:ys) = case (compare x y) of
     GT -> minus (x:xs) ys
 minus xs _ = xs
 
-primeFactors :: Int -> [Int]
 primeFactors n = factor n $ primesTo n
   where
     factor n (p:ps) 
@@ -118,7 +117,7 @@ euler Problem {pId = 11, dataString = Just sData} =
         allLines = rows ++ cols ++ allDiags
         groups = concatMap (sublists 4) allLines
     in 
-        trace (show $ diags $ reverse cols) $ maximum $ map product groups
+        maximum $ map product groups
         
 
 euler Problem {pId = 12} =
@@ -142,6 +141,15 @@ euler Problem {pId = 14}  =
         seqLen buf 1 = buf
         seqLen buf n = seqLen (buf+1) (next n)
     in maximumWith (seqLen 0) [(num `div` 2)..num]
+
+euler Problem {pId = 15} =
+    let 
+        size = 20 
+        dsize = 2 * size
+        combs n k = (product [n - k + 1..n]) `div` (factorial k)
+        result = 2 * (sum[combs (dsize - m - 1) (size-1) | m <- [1..size]])
+    in
+        fromInteger result
 
 euler Problem {pId = 16} = sum $ map digitToInt $ show $ 2^1000
 
