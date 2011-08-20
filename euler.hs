@@ -153,6 +153,32 @@ euler Problem {pId = 15} =
 
 euler Problem {pId = 16} = sum $ map digitToInt $ show $ 2^1000
 
+euler Problem {pId = 17} = 
+    let
+        below20 = ["", "one", "two", "three", "four", "five", 
+                   "six", "seven", "eight", "nine", "ten",
+                   "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+                   "sixteen", "seventeen", "eighteen", "nineteen"]
+
+        decs = ["", "", "twenty", "thirty", "forty", "fifty", 
+                "sixty", "seventy", "eighty", "ninety"]
+
+        say n  
+            | n < 20 = below20 !! n
+            | n < 100 = 
+                let (d, r) = n `divMod` 10 
+                    sayDecs = decs !! d
+                in sayDecs ++ (if r==0 then "" else "-" ++(say r))
+            | n < 1000 = let (d, r) = n `divMod` 100 
+                             sayHund = (say d) ++ " hundred"
+                in sayHund ++ (if r==0 then "" else " and " ++ (say r))
+            | n == 1000 = "one thousand"
+            | otherwise = undefined
+
+    in 
+        length $ filter isAlpha ([1..1000] >>= say)
+
+
 euler Problem {pId = 18, dataString = Nothing} = error "Tree data file is missing"
 euler Problem {pId = 18, dataString = Just sData} =
     let tree = [map read $ words l | l <- lines sData]
