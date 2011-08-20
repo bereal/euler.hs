@@ -49,12 +49,13 @@ primeFactors n = factor n $ primesTo n
         | n `mod` p == 0 = p : factor (n `div` p) (p:ps)
         | otherwise      = factor n ps
 
---
--- Problems
+-- Problems ------------------------------------------------
 
 data Problem = Problem { pId :: Int, dataString :: Maybe String }
 
 euler :: Problem -> Int
+
+-- Problem 1 -----------------------------------------------
 
 euler Problem {pId = 1} = 
     let divisors = [3,5]
@@ -63,12 +64,21 @@ euler Problem {pId = 1} =
         goodNums = filter isGood [1..limit-1]
     in sum goodNums
 
+
+-- Problem 2 -----------------------------------------------
+
 euler Problem {pId = 2} = 
     let limit = 4000000
         nums = takeWhile (<=limit) (fibonacci 0 1) 
     in sum $ filter even nums
 
+
+-- Problem 3 -----------------------------------------------
+
 euler Problem {pId = 3}  = maximum $ primeFactors 600851475143
+
+
+-- Problem 4 -----------------------------------------------
 
 euler Problem {pId = 4}  =
     let palindromes = map mkPalind [999,998..100]
@@ -81,7 +91,13 @@ euler Problem {pId = 4}  =
         isSolution n = isJust $ find (isGoodDiv n) divisors
     in head $ filter isSolution palindromes 
 
+
+-- Problem 5 -----------------------------------------------
+
 euler Problem {pId = 5}  = foldr1 lcm [1..20]
+
+
+-- Problem 6 -----------------------------------------------
 
 euler Problem {pId = 6} = 
     let nums = [1..100]
@@ -89,8 +105,14 @@ euler Problem {pId = 6} =
         sqSum = (^2) . sum
     in (sqSum nums) - (sumSq nums)
 
+
+-- Problem 7 -----------------------------------------------
+
 euler Problem {pId = 7}  = head $ drop 10000 $ primes
     
+
+-- Problem 8 -----------------------------------------------
+
 euler Problem {pId = 8, dataString=Nothing} = error "Data file is missing"
 euler Problem {pId = 8, dataString=Just sData} = 
     let 
@@ -99,17 +121,24 @@ euler Problem {pId = 8, dataString=Just sData} =
         maximum [product arr | arr <- sublists 5 digits]
 
 
+-- Problem 9 -----------------------------------------------
+
 euler Problem {pId = 9} = 
     let param = 1000
         isSolution (x, y) = x^2 + y^2 == (param - x - y)^2
         (a, b) = head $ filter isSolution [(x, y) | x <- [1..1000], y <- [1..1000-x]]
     in a * b * (param - a - b)
 
+
+-- Problem 10 ----------------------------------------------
+
 euler Problem {pId = 10} = sum $ primesTo 2000000
+
+
+-- Problem 11 ----------------------------------------------
 
 euler Problem {pId = 11, dataString = Just sData} =
     let 
-        rows :: [[Int]]
         rows = [map read $ words l | l <- (lines sData)]
         cols = transpose rows
         diags matrix = transpose [drop i r | (i,r) <- enum matrix]
@@ -120,11 +149,16 @@ euler Problem {pId = 11, dataString = Just sData} =
         maximum $ map product groups
         
 
+-- Problem 12 ----------------------------------------------
+
 euler Problem {pId = 12} =
     let triangles = scanl1 (+) [1..]
         countDivisors n = product $ map ((+1).length) $ group $ primeFactors n
         isSolution n = countDivisors n > 500
     in head $ filter isSolution triangles
+
+
+-- Problem 13 ----------------------------------------------
 
 euler Problem {pId = 13, dataString=Nothing} = error "Data file is missing"
 euler Problem {pId = 13, dataString = Just sData}  
@@ -132,6 +166,9 @@ euler Problem {pId = 13, dataString = Just sData}
           s = sum nums
           digitsStr = take 10 $ show s
     in read digitsStr          
+
+
+-- Problem 14 ----------------------------------------------
 
 euler Problem {pId = 14}  = 
     let num = 1000000
@@ -142,6 +179,9 @@ euler Problem {pId = 14}  =
         seqLen buf n = seqLen (buf+1) (next n)
     in maximumWith (seqLen 0) [(num `div` 2)..num]
 
+
+-- Problem 15 ----------------------------------------------
+
 euler Problem {pId = 15} =
     let 
         size = 20 
@@ -151,7 +191,13 @@ euler Problem {pId = 15} =
     in
         fromInteger result
 
+
+-- Problem 16 ----------------------------------------------
+
 euler Problem {pId = 16} = sum $ map digitToInt $ show $ 2^1000
+
+
+-- Problem 17 ----------------------------------------------
 
 euler Problem {pId = 17} = 
     let
@@ -179,6 +225,8 @@ euler Problem {pId = 17} =
         length $ filter isAlpha ([1..1000] >>= say)
 
 
+-- Problem 18 ----------------------------------------------
+
 euler Problem {pId = 18, dataString = Nothing} = error "Tree data file is missing"
 euler Problem {pId = 18, dataString = Just sData} =
     let tree = [map read $ words l | l <- lines sData]
@@ -188,6 +236,8 @@ euler Problem {pId = 18, dataString = Just sData} =
     in
         head $ foldl calcPaths [] $ reverse tree
 
+
+-- Problem 19 ----------------------------------------------
 
 euler Problem {pId = 19} =
     let isLeap year = year `mod` 4 == 0 -- enough for the XX century 
@@ -209,6 +259,8 @@ euler Problem {pId = 19} =
         length $ findSub isXX $ filter (isDay 1) sundays
 
         
+-- Problem 20 ----------------------------------------------
+
 euler Problem {pId = 20} = sum $ map digitToInt $ show $ factorial 100
 
 -- main
