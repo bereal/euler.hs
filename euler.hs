@@ -187,6 +187,27 @@ euler Problem {pId = 18, dataString = Just sData} =
         calcPaths kidPaths level = zipWith (+) level (maxFromPairs kidPaths)
     in
         head $ foldl calcPaths [] $ reverse tree
+
+
+euler Problem {pId = 19} =
+    let isLeap year = year `mod` 4 == 0 -- enough for the XX century 
+        smod v m = 1 + ((v-1) `mod` m)
+        months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        addWeek (y, m, d) =
+            let
+                monLen = months !! (m-1) + (if m==2 && (isLeap y) then 1 else 0)
+                newD = d+7 
+                newM = if newD > monLen then (m + 1) else m
+                newY = if newM > 12 then (y+1) else y
+            in (newY, newM `smod` 12, newD `smod` monLen)
+
+        sundays = iterate addWeek (1900, 1, 7)
+        isDay d (_, _, d') = d == d'
+        isXX (y, _, _) = y <= 2000 && y >= 1901
+        findSub f l = takeWhile f $ dropWhile (not.f) l
+    in
+        length $ findSub isXX $ filter (isDay 1) sundays
+
         
 euler Problem {pId = 20} = sum $ map digitToInt $ show $ factorial 100
 
