@@ -108,6 +108,19 @@ euler Problem {pId = 9} =
 
 euler Problem {pId = 10} = sum $ primesTo 2000000
 
+euler Problem {pId = 11, dataString = Just sData} =
+    let 
+        rows :: [[Int]]
+        rows = [map read $ words l | l <- (lines sData)]
+        cols = transpose rows
+        diags matrix = transpose [drop i r | (i,r) <- enum matrix]
+        allDiags = [rows, cols, (map reverse rows), (map reverse cols)] >>= diags
+        allLines = rows ++ cols ++ allDiags
+        groups = concatMap (sublists 4) allLines
+    in 
+        trace (show $ diags $ reverse cols) $ maximum $ map product groups
+        
+
 euler Problem {pId = 12} =
     let triangles = scanl1 (+) [1..]
         countDivisors n = product $ map ((+1).length) $ group $ primeFactors n
