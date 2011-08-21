@@ -374,6 +374,20 @@ euler Problem {pId = 26} =
     in maximumBy (compare `on` loopLen) [1..1000]
 
 
+-- Problem 27 ----------------------------------------------
+
+euler Problem {pId = 27} =
+    let isPrime n = n>1 && length (primeFactors n) == 1
+        getSequence a b = map (\n -> (n + a) * n + b) [1..]
+        primeSeqLen (a, b) = length $ takeWhile isPrime (getSequence a b)
+        cmp = compare `on` primeSeqLen
+        (a, b) = maximumBy cmp [(a',b') | a'<-[-999,-997..1000],
+                                          b'<-[-a',-a'+2..1000]]
+    in
+        (a*b)
+        
+
+
 -- main
 --
 readData :: String -> IO (Maybe String)
