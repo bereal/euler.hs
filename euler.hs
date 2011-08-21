@@ -387,6 +387,22 @@ euler Problem {pId = 27} =
         (a*b)
         
 
+-- Problem 28 ----------------------------------------------
+
+euler Problem {pId = 28} =
+    let calcCorners buf = buf ++ [[start+step*i | i<-[0..3]]]
+            where size = 2*(length buf) + 1
+                  step = size - 1
+                  start = step + (last $ last buf) 
+        
+        corners = iterate calcCorners [[1]]
+        spiralSize = 1001
+        spiralCorns = corners !! ((spiralSize-1) `div` 2)
+    in
+        sum $ map sum spiralCorns
+
+       
+
 -- Problem 30 ----------------------------------------------
 
 euler Problem {pId = 30} =
