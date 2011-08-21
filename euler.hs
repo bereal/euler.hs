@@ -14,6 +14,8 @@ False ? _ = id
 
 enum = zip [0..]
 
+trace' v = trace (show v) v
+
 sublists len arr =
     if length arr < len
         then []
@@ -322,6 +324,28 @@ euler Problem {pId = 23} =
         diffAbundant n a = isAbundant (n-a)
         isSum n = isJust $ find (diffAbundant n) $ takeWhile (< n) abundants
     in sum $ filter (not . isSum) [1..limit]
+
+
+-- Problem 24 ----------------------------------------------
+
+euler Problem {pId = 24} =
+    let splitAtBrokenOrder (x: y: rest) buf
+            | y < x = (buf ++ [x], y, rest)
+            | otherwise = splitAtBrokenOrder (y: rest) (buf++[x])
+
+        next s = -- deal with reversed list
+            let (left, x, right) = splitAtBrokenOrder s []
+                (left', (y : right')) =  span (<x) left
+            in (reverse (left' ++ (x:right'))) ++ (y:right)
+
+        start = ['0'..'9']
+
+        iter f x n = iter' n x where
+            iter' 1 buf = buf
+            iter' n buf = iter' (n-1) $ f buf
+    in
+        read $ reverse $ iter next (reverse start) $ 1000000
+                
 
 -- main
 --
