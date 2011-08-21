@@ -401,7 +401,13 @@ euler Problem {pId = 28} =
     in
         sum $ map sum spiralCorns
 
+-- Problem 29 ----------------------------------------------
 
+euler Problem {pId = 29} =
+    let vals = [a^b | a<-[2..100], b<-[2..100]]
+    in length $ group $ sort $ vals
+
+ 
 -- Problem 30 ----------------------------------------------
 
 euler Problem {pId = 30} =
