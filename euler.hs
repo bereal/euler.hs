@@ -299,6 +299,7 @@ euler Problem {pId = 21} =
             in  n == (sum $ allFactors candidate) && n/=candidate
     in sum $ filter isAmicable [1..9999]
 
+
 -- Problem 22 ----------------------------------------------
 
 euler Problem {pId = 22, dataString=Just sData} = 
@@ -310,6 +311,17 @@ euler Problem {pId = 22, dataString=Just sData} =
         alphaScores = sum . (map alphaNum)
     in sum $ zipWith (*) [1..] (map alphaScores sortedWords)
 
+
+-- Problem 23 ----------------------------------------------
+
+euler Problem {pId = 23} =
+    let 
+        limit = 28123
+        isAbundant x = (sum $ allFactors x) > x
+        abundants = filter isAbundant [1..limit]
+        diffAbundant n a = isAbundant (n-a)
+        isSum n = isJust $ find (diffAbundant n) $ takeWhile (< n) abundants
+    in sum $ filter (not . isSum) [1..limit]
 
 -- main
 --
