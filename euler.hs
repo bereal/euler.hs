@@ -401,7 +401,6 @@ euler Problem {pId = 28} =
     in
         sum $ map sum spiralCorns
 
-       
 
 -- Problem 30 ----------------------------------------------
 
@@ -425,6 +424,13 @@ euler Problem {pId = 52} =
             in all (== h) t
 
     in head $ filter isGoodNum [1..]
+
+-- Problem 67 ----------------------------------------------
+
+euler Problem {pId = 67, dataString = Nothing} = error "Tree data file is missing"
+euler Problem {pId = 67, dataString = Just sData} = 
+    euler Problem {pId=18, dataString = Just sData}
+  
 
 -- main
 --
