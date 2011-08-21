@@ -23,6 +23,14 @@ fibonacci a b = let c = a + b in (c : fibonacci b c)
 
 factorial n = product [2..n]
 
+splitOn :: (a->Bool) -> [a] -> [[a]]
+splitOn _ [] = []
+splitOn f ls = 
+    case dropWhile f ls of
+        [] -> []
+        ls' -> part : splitOn f rest
+            where (part, rest) = break f ls'
+
 -- A primes sieve from haskell.org:
 
 primes = 2 : eratos [3,5..]  where
@@ -290,6 +298,18 @@ euler Problem {pId = 21} =
                 candidate = sum factors 
             in  n == (sum $ allFactors candidate) && n/=candidate
     in sum $ filter isAmicable [1..9999]
+
+-- Problem 22 ----------------------------------------------
+
+euler Problem {pId = 22, dataString=Just sData} = 
+    let w0rds = splitOn (not . isAlpha) sData
+        sortedWords = sort w0rds
+        alphaNum c = ord c - base
+            where base = ord 'A' - 1
+
+        alphaScores = sum . (map alphaNum)
+    in sum $ zipWith (*) [1..] (map alphaScores sortedWords)
+
 
 -- main
 --
