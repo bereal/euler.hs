@@ -387,6 +387,14 @@ euler Problem {pId = 27} =
         (a*b)
         
 
+-- Problem 52 ----------------------------------------------
+
+euler Problem {pId = 52} =
+    let isGoodNum n = 
+            let (h:t) = map (sort.show.(n*)) [2..6]
+            in all (== h) t
+
+    in head $ filter isGoodNum [1..]
 
 -- main
 --
