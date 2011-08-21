@@ -4,6 +4,7 @@ import Data.List
 import Data.Maybe
 import Data.Function
 import Char
+import Numeric
 import Debug.Trace
 
 -- Utils
@@ -413,6 +414,18 @@ euler Problem {pId = 29} =
 euler Problem {pId = 30} =
     let isGood n = n == (sum $ map ((^5).digitToInt) $ show n)
     in sum $ filter isGood [2..1000000]
+ 
+-- Problem 36 ----------------------------------------------
+
+euler Problem {pId = 36} = 
+    let isPalind s = (head rev /= '0') && (s == rev)
+            where rev = reverse s
+        isPalind2_10 n = (isPalind s10) && (isPalind s2)
+            where s10 = showIntAtBase 2 intToDigit n ""
+                  s2  = show n
+        limit = 1000000
+    in sum $ filter isPalind2_10 [1..(limit-1)]
+            
 
 
 -- Problem 48 ----------------------------------------------
