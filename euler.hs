@@ -354,7 +354,24 @@ euler Problem {pId = 25} =
     in f 0 1 1
 
 
+-- Problem 26 ----------------------------------------------
 
+euler Problem {pId = 26} =
+    let divide rem val =
+            case rem `divMod` val of
+                (q, 0) -> [(rem, q)]
+                (q, r) -> (rem, q) : (divide (r*10) val)
+
+        findLoop sequence = findLoop' [] sequence
+            where
+                findLoop' buf [] = buf
+                findLoop' buf (s:rest) = case (findIndex (==s) buf) of
+                    Just i -> reverse $ take (i+1) buf
+                    Nothing -> findLoop' (s:buf) rest
+                
+        loopLen = length . findLoop . (divide 10)
+
+    in maximumBy (compare `on` loopLen) [1..1000]
 
 
 -- main
