@@ -347,6 +347,16 @@ euler Problem {pId = 24} =
         read $ reverse $ iter next (reverse start) $ 1000000
                 
 
+-- Problem 25 ----------------------------------------------
+
+euler Problem {pId = 25} =
+    let f x y n = if (length $ show y) == 1000 then n else f y (y+x) (n+1)
+    in f 0 1 1
+
+
+
+
+
 -- main
 --
 readData :: String -> IO (Maybe String)
