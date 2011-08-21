@@ -2,6 +2,7 @@ import System.Environment
 import System.Directory
 import Data.List
 import Data.Maybe
+import Data.Function
 import Char
 import Debug.Trace
 
@@ -18,12 +19,6 @@ sublists len arr =
         then []
         else (take len arr : (sublists len $ tail arr))
 
-maximumWith :: (Ord  b) => (a->b) -> [a] -> a
-maximumWith f l = 
-    let pairs = [(f a, a) | a <- l]
-        cmp t1 t2 = compare (fst t1) (fst t2)
-    in snd $ maximumBy cmp pairs
-
 fibonacci a b = let c = a + b in (c : fibonacci b c)
 
 factorial n = product [2..n]
@@ -34,7 +29,9 @@ primes = 2 : eratos [3,5..]  where
     eratos []     = []
     eratos (p:xs) = p : eratos (xs `minus` [p*p,p*p+2*p..])
 
-primesTo n = takeWhile (<=n) primes
+primesTo n = 2 : eratos [3,5..n]  where
+    eratos []     = []
+    eratos (p:xs) = p : eratos (xs `minus` [p*p,p*p+2*p..n])
 
 minus (x:xs) (y:ys) = case (compare x y) of
     LT -> x : minus xs (y:ys)
@@ -48,6 +45,24 @@ primeFactors n = factor n $ primesTo n
         | p*p > n        = [n]
         | n `mod` p == 0 = p : factor (n `div` p) (p:ps)
         | otherwise      = factor n ps
+
+cartesianLists :: [[a]] -> [[a]]
+cartesianLists [] = []
+cartesianLists [hs] = [[h] | h<-hs ]
+cartesianLists (hs:ts) = 
+    let cart' = cartesianLists ts
+    in [h:c | c<-cart', h<-hs]
+
+allFactors :: Int -> [Int]
+allFactors 1 = [1]
+allFactors n = 
+    let pf = group $ primeFactors n
+        prims = map head pf
+        powers = map length  pf 
+        mkFactor pows = product $ zipWith (^) prims pows
+    in
+        init $ map mkFactor $ cartesianLists [[0..p] | p<-powers]
+
 
 -- Problems ------------------------------------------------
 
@@ -175,9 +190,10 @@ euler Problem {pId = 14}  =
         next n 
             | even n = n `div` 2
             | otherwise = 3 * n + 1
-        seqLen buf 1 = buf
-        seqLen buf n = seqLen (buf+1) (next n)
-    in maximumWith (seqLen 0) [(num `div` 2)..num]
+        seqLen' buf 1 = buf
+        seqLen' buf n = seqLen' (buf+1) (next n)
+        seqLen = seqLen' 0
+    in maximumBy (compare `on` seqLen) [(num `div` 2)..num]
 
 
 -- Problem 15 ----------------------------------------------
@@ -265,8 +281,18 @@ euler Problem {pId = 19} =
 
 euler Problem {pId = 20} = sum $ map digitToInt $ show $ factorial 100
 
--- main
 
+-- Problem 21 ----------------------------------------------
+
+euler Problem {pId = 21} = 
+    let isAmicable n =
+            let factors = allFactors n
+                candidate = sum factors 
+            in  n == (sum $ allFactors candidate) && n/=candidate
+    in sum $ filter isAmicable [1..9999]
+
+-- main
+--
 readData :: String -> IO (Maybe String)
 readData f = do
     exists <- doesFileExist f
