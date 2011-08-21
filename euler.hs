@@ -415,6 +415,13 @@ euler Problem {pId = 30} =
     let isGood n = n == (sum $ map ((^5).digitToInt) $ show n)
     in sum $ filter isGood [2..1000000]
  
+
+-- Problem 34 ----------------------------------------------
+
+euler Problem {pId = 34} = 
+    let isGood n = n == (sum $ map (factorial.digitToInt) $ show n)
+    in sum $ filter isGood [3..3000000]
+ 
 -- Problem 36 ----------------------------------------------
 
 euler Problem {pId = 36} = 
