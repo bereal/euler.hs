@@ -44,6 +44,8 @@ primesTo n = 2 : eratos [3,5..n]  where
     eratos []     = []
     eratos (p:xs) = p : eratos (xs `minus` [p*p,p*p+2*p..n])
 
+isPrime n = n>1 && length (primeFactors n) == 1
+
 minus (x:xs) (y:ys) = case (compare x y) of
     LT -> x : minus xs (y:ys)
     EQ -> minus xs ys
@@ -378,8 +380,7 @@ euler Problem {pId = 26} =
 -- Problem 27 ----------------------------------------------
 
 euler Problem {pId = 27} =
-    let isPrime n = n>1 && length (primeFactors n) == 1
-        getSequence a b = map (\n -> (n + a) * n + b) [1..]
+    let getSequence a b = map (\n -> (n + a) * n + b) [1..]
         primeSeqLen (a, b) = length $ takeWhile isPrime (getSequence a b)
         cmp = compare `on` primeSeqLen
         (a, b) = maximumBy cmp [(a',b') | a'<-[-999,-997..1000],
@@ -422,6 +423,20 @@ euler Problem {pId = 34} =
     let isGood n = n == (sum $ map (factorial.digitToInt) $ show n)
     in sum $ filter isGood [3..3000000]
  
+
+-- Problem 35 ----------------------------------------------
+
+euler Problem {pId = 35} = 
+    let rotate (x:xs) = xs ++ [x]
+        rotations l = take (length l) $ iterate rotate l
+        isCircularPrime = (all isPrime).(map read).tail.rotations.show
+        -- ^^^ tail is because iterating through primes
+        -- and don't need to check the original number
+
+    in length $ filter isCircularPrime $ primesTo 1000000
+
+ 
+
 -- Problem 36 ----------------------------------------------
 
 euler Problem {pId = 36} = 
