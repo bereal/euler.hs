@@ -386,6 +386,14 @@ euler Problem {pId = 27} =
     in
         (a*b)
         
+
+-- Problem 30 ----------------------------------------------
+
+euler Problem {pId = 30} =
+    let isGood n = n == (sum $ map ((^5).digitToInt) $ show n)
+    in sum $ filter isGood [2..1000000]
+
+
 -- Problem 48 ----------------------------------------------
 
 euler Problem {pId = 48} = 
