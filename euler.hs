@@ -386,6 +386,12 @@ euler Problem {pId = 27} =
     in
         (a*b)
         
+-- Problem 48 ----------------------------------------------
+
+euler Problem {pId = 48} = 
+    let last10 = read . reverse . (take 10) . reverse . show
+    in last10 $ foldl1 (+) (map (\x->x^x) [1..1000]) 
+
 
 -- Problem 52 ----------------------------------------------
 
