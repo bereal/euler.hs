@@ -34,6 +34,8 @@ splitOn f ls =
         ls' -> part : splitOn f rest
             where (part, rest) = break f ls'
 
+isInteger = (==0).snd.properFraction
+
 alphaScore = 
     let alphaNum c = ord c - base
             where base = ord 'A' - 1
@@ -457,16 +459,30 @@ euler Problem {pId = 40} =
     let digits = map digitToInt $ [1..] >>= show
     in product $ map (\n -> digits !! (10^n-1)) [0..6]
 
+
 -- Problem 42 ----------------------------------------------
 
 euler Problem {pId = 42, dataString=Nothing} = error "Data file is missing"
 euler Problem {pId = 42, dataString = Just sData} = 
     -- n^2 + n - 2a = 0 ; when does this equation have natural solutions?
     let discriminant a = 8*a + 1
-        isTriangle = (==0).snd.properFraction.sqrt.discriminant.fromIntegral
+        isTriangle = isInteger.sqrt.discriminant.fromIntegral
         scores = map alphaScore $ splitOn (not.isAlpha) sData
     in 
         length $ filter isTriangle scores
+
+
+-- Problem 45 ----------------------------------------------
+
+euler Problem {pId = 45} = 
+    let triangles = scanl1 (+) [1..]
+        hasIntRoots a b c = (isInteger sqd) && ((-b + (round sqd)) `mod` (2*a) ==0 )
+            where sqd = sqrt $ fromIntegral $ (b^2 - 4*a*c)
+        isPentagonal n = hasIntRoots 3 (-1) (-2*n)
+        isHexagonal n = hasIntRoots 2 (-1) (-n)
+        isGood a = isPentagonal a && isHexagonal a
+    in head $ filter isGood $ dropWhile (<=40755) triangles
+
 
 -- Problem 48 ----------------------------------------------
 
