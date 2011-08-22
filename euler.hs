@@ -34,6 +34,12 @@ splitOn f ls =
         ls' -> part : splitOn f rest
             where (part, rest) = break f ls'
 
+alphaScore = 
+    let alphaNum c = ord c - base
+            where base = ord 'A' - 1
+
+    in sum . (map alphaNum)
+
 -- A primes sieve from haskell.org:
 
 primes = 2 : eratos [3,5..]  where
@@ -310,11 +316,7 @@ euler Problem {pId = 21} =
 euler Problem {pId = 22, dataString=Just sData} = 
     let w0rds = splitOn (not . isAlpha) sData
         sortedWords = sort w0rds
-        alphaNum c = ord c - base
-            where base = ord 'A' - 1
-
-        alphaScores = sum . (map alphaNum)
-    in sum $ zipWith (*) [1..] (map alphaScores sortedWords)
+    in sum $ zipWith (*) [1..] (map alphaScore sortedWords)
 
 
 -- Problem 23 ----------------------------------------------
@@ -454,6 +456,17 @@ euler Problem {pId = 36} =
 euler Problem {pId = 40} = 
     let digits = map digitToInt $ [1..] >>= show
     in product $ map (\n -> digits !! (10^n-1)) [0..6]
+
+-- Problem 42 ----------------------------------------------
+
+euler Problem {pId = 42, dataString=Nothing} = error "Data file is missing"
+euler Problem {pId = 42, dataString = Just sData} = 
+    -- n^2 + n - 2a = 0 ; when does this equation have natural solutions?
+    let discriminant a = 8*a + 1
+        isTriangle = (==0).snd.properFraction.sqrt.discriminant.fromIntegral
+        scores = map alphaScore $ splitOn (not.isAlpha) sData
+    in 
+        length $ filter isTriangle scores
 
 -- Problem 48 ----------------------------------------------
 
