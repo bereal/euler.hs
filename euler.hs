@@ -449,6 +449,11 @@ euler Problem {pId = 36} =
     in sum $ filter isPalind2_10 [1..(limit-1)]
             
 
+-- Problem 40 ----------------------------------------------
+
+euler Problem {pId = 40} = 
+    let digits = map digitToInt $ [1..] >>= show
+    in product $ map (\n -> digits !! (10^n-1)) [0..6]
 
 -- Problem 48 ----------------------------------------------
 
