@@ -22,7 +22,7 @@ sublists len arr =
         then []
         else (take len arr : (sublists len $ tail arr))
 
-fibonacci a b = let c = a + b in (c : fibonacci b c)
+fibonacci = 0 : 1 : zipWith (+) fibonacci (tail fibonacci)
 
 factorial n = product [2..n]
 
@@ -105,7 +105,7 @@ euler Problem {pId = 1} =
 
 euler Problem {pId = 2} = 
     let limit = 4000000
-        nums = takeWhile (<=limit) (fibonacci 0 1) 
+        nums = takeWhile (<=limit) fibonacci
     in sum $ filter even nums
 
 
