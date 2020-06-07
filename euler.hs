@@ -3,7 +3,7 @@ import System.Directory
 import Data.List
 import Data.Maybe
 import Data.Function
-import Char
+import Data.Char
 import Numeric
 import Debug.Trace
 
@@ -28,7 +28,7 @@ factorial n = product [2..n]
 
 splitOn :: (a->Bool) -> [a] -> [[a]]
 splitOn _ [] = []
-splitOn f ls = 
+splitOn f ls =
     case dropWhile f ls of
         [] -> []
         ls' -> part : splitOn f rest
@@ -36,7 +36,7 @@ splitOn f ls =
 
 isInteger = (==0).snd.properFraction
 
-alphaScore = 
+alphaScore =
     let alphaNum c = ord c - base
             where base = ord 'A' - 1
 
@@ -62,7 +62,7 @@ minus xs _ = xs
 
 primeFactors n = factor n $ primesTo n
   where
-    factor n (p:ps) 
+    factor n (p:ps)
         | p*p > n        = [n]
         | n `mod` p == 0 = p : factor (n `div` p) (p:ps)
         | otherwise      = factor n ps
@@ -70,16 +70,16 @@ primeFactors n = factor n $ primesTo n
 cartesianLists :: [[a]] -> [[a]]
 cartesianLists [] = []
 cartesianLists [hs] = [[h] | h<-hs ]
-cartesianLists (hs:ts) = 
+cartesianLists (hs:ts) =
     let cart' = cartesianLists ts
     in [h:c | c<-cart', h<-hs]
 
 allFactors :: Int -> [Int]
 allFactors 1 = [1]
-allFactors n = 
+allFactors n =
     let pf = group $ primeFactors n
         prims = map head pf
-        powers = map length  pf 
+        powers = map length  pf
         mkFactor pows = product $ zipWith (^) prims pows
     in
         init $ map mkFactor $ cartesianLists [[0..p] | p<-powers]
@@ -93,7 +93,7 @@ euler :: Problem -> Int
 
 -- Problem 1 -----------------------------------------------
 
-euler Problem {pId = 1} = 
+euler Problem {pId = 1} =
     let divisors = [3,5]
         limit    = 1000
         isGood n = any (==0) $ map (mod n) divisors
@@ -103,7 +103,7 @@ euler Problem {pId = 1} =
 
 -- Problem 2 -----------------------------------------------
 
-euler Problem {pId = 2} = 
+euler Problem {pId = 2} =
     let limit = 4000000
         nums = takeWhile (<=limit) fibonacci
     in sum $ filter even nums
@@ -122,10 +122,10 @@ euler Problem {pId = 4}  =
 
         -- We can use the fact that any palindrome of 2*n digits is a multiple of 11
         divisors = [990, 979..100]
-        isGoodDiv n d = let (q, r) = (n `divMod` d) 
+        isGoodDiv n d = let (q, r) = (n `divMod` d)
                         in (r==0 && q < 1000 && q > 100)
         isSolution n = isJust $ find (isGoodDiv n) divisors
-    in head $ filter isSolution palindromes 
+    in head $ filter isSolution palindromes
 
 
 -- Problem 5 -----------------------------------------------
@@ -135,7 +135,7 @@ euler Problem {pId = 5}  = foldr1 lcm [1..20]
 
 -- Problem 6 -----------------------------------------------
 
-euler Problem {pId = 6} = 
+euler Problem {pId = 6} =
     let nums = [1..100]
         sumSq = sum . map (^2)
         sqSum = (^2) . sum
@@ -145,13 +145,13 @@ euler Problem {pId = 6} =
 -- Problem 7 -----------------------------------------------
 
 euler Problem {pId = 7}  = head $ drop 10000 $ primes
-    
+
 
 -- Problem 8 -----------------------------------------------
 
 euler Problem {pId = 8, dataString=Nothing} = error "Data file is missing"
-euler Problem {pId = 8, dataString=Just sData} = 
-    let 
+euler Problem {pId = 8, dataString=Just sData} =
+    let
         digits = [digitToInt d | d <- sData, isDigit d]
     in
         maximum [product arr | arr <- sublists 5 digits]
@@ -159,7 +159,7 @@ euler Problem {pId = 8, dataString=Just sData} =
 
 -- Problem 9 -----------------------------------------------
 
-euler Problem {pId = 9} = 
+euler Problem {pId = 9} =
     let param = 1000
         isSolution (x, y) = x^2 + y^2 == (param - x - y)^2
         (a, b) = head $ filter isSolution [(x, y) | x <- [1..1000], y <- [1..1000-x]]
@@ -174,16 +174,16 @@ euler Problem {pId = 10} = sum $ primesTo 2000000
 -- Problem 11 ----------------------------------------------
 
 euler Problem {pId = 11, dataString = Just sData} =
-    let 
+    let
         rows = [map read $ words l | l <- (lines sData)]
         cols = transpose rows
         diags matrix = transpose [drop i r | (i,r) <- enum matrix]
         allDiags = [rows, cols, (map reverse rows), (map reverse cols)] >>= diags
         allLines = rows ++ cols ++ allDiags
         groups = concatMap (sublists 4) allLines
-    in 
+    in
         maximum $ map product groups
-        
+
 
 -- Problem 12 ----------------------------------------------
 
@@ -197,18 +197,18 @@ euler Problem {pId = 12} =
 -- Problem 13 ----------------------------------------------
 
 euler Problem {pId = 13, dataString=Nothing} = error "Data file is missing"
-euler Problem {pId = 13, dataString = Just sData}  
+euler Problem {pId = 13, dataString = Just sData}
     = let nums = map read $ lines sData
           s = sum nums
           digitsStr = take 10 $ show s
-    in read digitsStr          
+    in read digitsStr
 
 
 -- Problem 14 ----------------------------------------------
 
-euler Problem {pId = 14}  = 
+euler Problem {pId = 14}  =
     let num = 1000000
-        next n 
+        next n
             | even n = n `div` 2
             | otherwise = 3 * n + 1
         seqLen' buf 1 = buf
@@ -220,8 +220,8 @@ euler Problem {pId = 14}  =
 -- Problem 15 ----------------------------------------------
 
 euler Problem {pId = 15} =
-    let 
-        size = 20 
+    let
+        size = 20
         dsize = 2 * size
         combs n k = (product [n - k + 1..n]) `div` (factorial k)
         result = 2 * (sum[combs (dsize - m - 1) (size-1) | m <- [1..size]])
@@ -236,31 +236,31 @@ euler Problem {pId = 16} = sum $ map digitToInt $ show $ 2^1000
 
 -- Problem 17 ----------------------------------------------
 
-euler Problem {pId = 17} = 
+euler Problem {pId = 17} =
     let
-        below20 = ["", "one", "two", "three", "four", "five", 
+        below20 = ["", "one", "two", "three", "four", "five",
                    "six", "seven", "eight", "nine", "ten",
                    "eleven", "twelve", "thirteen", "fourteen", "fifteen",
                    "sixteen", "seventeen", "eighteen", "nineteen"]
 
-        decs = ["", "", "twenty", "thirty", "forty", "fifty", 
+        decs = ["", "", "twenty", "thirty", "forty", "fifty",
                 "sixty", "seventy", "eighty", "ninety"]
 
-        say n  
+        say n
             | n < 20 = below20 !! n
-            | n < 100 = 
-                let (d, r) = n `divMod` 10 
+            | n < 100 =
+                let (d, r) = n `divMod` 10
                     sayDecs = decs !! d
                     sayRest = "-" ++ (say r)
                 in sayDecs ++ (if r==0 then "" else sayRest)
-            | n < 1000 = let (d, r) = n `divMod` 100 
+            | n < 1000 = let (d, r) = n `divMod` 100
                              sayHund = (say d) ++ " hundred"
                              sayRest = " and " ++ (say r)
                 in sayHund ++ (if r==0 then "" else sayRest)
             | n == 1000 = "one thousand"
             | otherwise = undefined
 
-    in 
+    in
         length $ filter isAlpha ([1..1000] >>= say)
 
 
@@ -279,13 +279,13 @@ euler Problem {pId = 18, dataString = Just sData} =
 -- Problem 19 ----------------------------------------------
 
 euler Problem {pId = 19} =
-    let isLeap year = year `mod` 4 == 0 -- enough for the XX century 
+    let isLeap year = year `mod` 4 == 0 -- enough for the XX century
         smod v m = 1 + ((v-1) `mod` m)
         months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         addWeek (y, m, d) =
             let
                 monLen = months !! (m-1) + fromEnum (m==2 && (isLeap y))
-                newD = d+7 
+                newD = d+7
                 newM = m + fromEnum (newD > monLen)
                 newY = y + fromEnum (newM > 12)
             in (newY, newM `smod` 12, newD `smod` monLen)
@@ -297,7 +297,7 @@ euler Problem {pId = 19} =
     in
         length $ findSub isXX $ filter (isDay 1) sundays
 
-        
+
 -- Problem 20 ----------------------------------------------
 
 euler Problem {pId = 20} = sum $ map digitToInt $ show $ factorial 100
@@ -305,17 +305,17 @@ euler Problem {pId = 20} = sum $ map digitToInt $ show $ factorial 100
 
 -- Problem 21 ----------------------------------------------
 
-euler Problem {pId = 21} = 
+euler Problem {pId = 21} =
     let isAmicable n =
             let factors = allFactors n
-                candidate = sum factors 
+                candidate = sum factors
             in  n == (sum $ allFactors candidate) && n/=candidate
     in sum $ filter isAmicable [1..9999]
 
 
 -- Problem 22 ----------------------------------------------
 
-euler Problem {pId = 22, dataString=Just sData} = 
+euler Problem {pId = 22, dataString=Just sData} =
     let w0rds = splitOn (not . isAlpha) sData
         sortedWords = sort w0rds
     in sum $ zipWith (*) [1..] (map alphaScore sortedWords)
@@ -324,7 +324,7 @@ euler Problem {pId = 22, dataString=Just sData} =
 -- Problem 23 ----------------------------------------------
 
 euler Problem {pId = 23} =
-    let 
+    let
         limit = 28123
         isAbundant x = (sum $ allFactors x) > x
         abundants = filter isAbundant [1..limit]
@@ -352,7 +352,7 @@ euler Problem {pId = 24} =
             iter' n buf = iter' (n-1) $ f buf
     in
         read $ reverse $ iter next (reverse start) $ 1000000
-                
+
 
 -- Problem 25 ----------------------------------------------
 
@@ -375,7 +375,7 @@ euler Problem {pId = 26} =
                 findLoop' buf (s:rest) = case (findIndex (==s) buf) of
                     Just i -> reverse $ take (i+1) buf
                     Nothing -> findLoop' (s:buf) rest
-                
+
         loopLen = length . findLoop . (divide 10)
 
     in maximumBy (compare `on` loopLen) [1..1000]
@@ -391,7 +391,7 @@ euler Problem {pId = 27} =
                                           b'<-[-a',-a'+2..1000]]
     in
         (a*b)
-        
+
 
 -- Problem 28 ----------------------------------------------
 
@@ -399,8 +399,8 @@ euler Problem {pId = 28} =
     let calcCorners buf = buf ++ [[start+step*i | i<-[0..3]]]
             where size = 2*(length buf) + 1
                   step = size - 1
-                  start = step + (last $ last buf) 
-        
+                  start = step + (last $ last buf)
+
         corners = iterate calcCorners [[1]]
         spiralSize = 1001
         spiralCorns = corners !! ((spiralSize-1) `div` 2)
@@ -413,24 +413,36 @@ euler Problem {pId = 29} =
     let vals = [a^b | a<-[2..100], b<-[2..100]]
     in length $ group $ sort $ vals
 
- 
+
 -- Problem 30 ----------------------------------------------
 
 euler Problem {pId = 30} =
     let isGood n = n == (sum $ map ((^5).digitToInt) $ show n)
     in sum $ filter isGood [2..1000000]
- 
+
+
+-- Problem 31 ----------------------------------------------
+
+euler Problem {pId = 31} =
+    let coins = [1, 2, 5, 10, 20, 50, 100, 200]
+        solve cs v
+            | v == 0 = 1
+            | cs == [] = 0
+            | otherwise = let (c:cs') = cs
+                in if c > v then 0
+                else (solve cs $ v - c) + (solve cs' v)
+    in solve coins 200
 
 -- Problem 34 ----------------------------------------------
 
-euler Problem {pId = 34} = 
+euler Problem {pId = 34} =
     let isGood n = n == (sum $ map (factorial.digitToInt) $ show n)
     in sum $ filter isGood [3..3000000]
- 
+
 
 -- Problem 35 ----------------------------------------------
 
-euler Problem {pId = 35} = 
+euler Problem {pId = 35} =
     let rotate (x:xs) = xs ++ [x]
         rotations l = take (length l) $ iterate rotate l
         isCircularPrime = (all isPrime).(map read).tail.rotations.show
@@ -439,11 +451,11 @@ euler Problem {pId = 35} =
 
     in length $ filter isCircularPrime $ primesTo 1000000
 
- 
+
 
 -- Problem 36 ----------------------------------------------
 
-euler Problem {pId = 36} = 
+euler Problem {pId = 36} =
     let isPalind s = (head rev /= '0') && (s == rev)
             where rev = reverse s
         isPalind2_10 n = (isPalind s10) && (isPalind s2)
@@ -451,11 +463,11 @@ euler Problem {pId = 36} =
                   s2  = show n
         limit = 1000000
     in sum $ filter isPalind2_10 [1..(limit-1)]
-            
+
 
 -- Problem 40 ----------------------------------------------
 
-euler Problem {pId = 40} = 
+euler Problem {pId = 40} =
     let digits = map digitToInt $ [1..] >>= show
     in product $ map (\n -> digits !! (10^n-1)) [0..6]
 
@@ -463,18 +475,18 @@ euler Problem {pId = 40} =
 -- Problem 42 ----------------------------------------------
 
 euler Problem {pId = 42, dataString=Nothing} = error "Data file is missing"
-euler Problem {pId = 42, dataString = Just sData} = 
+euler Problem {pId = 42, dataString = Just sData} =
     -- n^2 + n - 2a = 0 ; when does this equation have natural solutions?
     let discriminant a = 8*a + 1
         isTriangle = isInteger.sqrt.discriminant.fromIntegral
         scores = map alphaScore $ splitOn (not.isAlpha) sData
-    in 
+    in
         length $ filter isTriangle scores
 
 
 -- Problem 45 ----------------------------------------------
 
-euler Problem {pId = 45} = 
+euler Problem {pId = 45} =
     let triangles = scanl1 (+) [1..]
         hasIntRoots a b c = (isInteger sqd) && ((-b + (round sqd)) `mod` (2*a) ==0 )
             where sqd = sqrt $ fromIntegral $ (b^2 - 4*a*c)
@@ -486,15 +498,15 @@ euler Problem {pId = 45} =
 
 -- Problem 48 ----------------------------------------------
 
-euler Problem {pId = 48} = 
+euler Problem {pId = 48} =
     let last10 = read . reverse . (take 10) . reverse . show
-    in last10 $ foldl1 (+) (map (\x->x^x) [1..1000]) 
+    in last10 $ foldl1 (+) (map (\x->x^x) [1..1000])
 
 
 -- Problem 52 ----------------------------------------------
 
 euler Problem {pId = 52} =
-    let isGoodNum n = 
+    let isGoodNum n =
             let (h:t) = map (sort.show.(n*)) [2..6]
             in all (== h) t
 
@@ -503,9 +515,9 @@ euler Problem {pId = 52} =
 -- Problem 67 ----------------------------------------------
 
 euler Problem {pId = 67, dataString = Nothing} = error "Tree data file is missing"
-euler Problem {pId = 67, dataString = Just sData} = 
+euler Problem {pId = 67, dataString = Just sData} =
     euler Problem {pId=18, dataString = Just sData}
-  
+
 
 -- main
 --
@@ -515,7 +527,7 @@ readData f = do
     if exists then readFile f >>= (return . Just) else return Nothing
 
 main = do
-    args <- getArgs 
+    args <- getArgs
     let problem_id = head args
     let dataFile = concat ["data_", problem_id, ".txt"]
     dat <- readData dataFile
